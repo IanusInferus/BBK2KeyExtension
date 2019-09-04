@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="32sp"
+        android:background="@android:color/black"
+        android:orientation="horizontal">
+            <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F1"
+            android:hint="131"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F2"
+            android:hint="132"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F3"
+            android:hint="133"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F4"
+            android:hint="134"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F5"
+            android:hint="135"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F6"
+            android:hint="136"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F7"
+            android:hint="137"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F8"
+            android:hint="138"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F9"
+            android:hint="139"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F10"
+            android:hint="140"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F11"
+            android:hint="141"
+            android:textSize="12sp" />
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="F12"
+            android:hint="142"
+            android:textSize="12sp" />
+    </LinearLayout>
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="32sp"
+        android:background="@android:color/black"
+        android:orientation="horizontal">
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="~"
+            android:hint="S68"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="`"
+            android:hint="68"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="$"
+            android:hint="S11"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="%"
+            android:hint="S12"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="^"
+            android:hint="S13"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="&amp;"
+            android:hint="S14"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="="
+            android:hint="70"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="|"
+            android:hint="S73"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="\\"
+            android:hint="73"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ins"
+            android:hint="124"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Del"
+            android:hint="112"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Slow"
+            android:textSize="9sp" />
+    </LinearLayout>
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="32sp"
+        android:background="@android:color/black"
+        android:orientation="horizontal">
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Esc"
+            android:hint="111"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Caps"
+            android:hint="115"
+            android:textSize="10sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="&lt;"
+            android:hint="S55"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="&gt;"
+            android:hint="S56"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="["
+            android:hint="71"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="]"
+            android:hint="72"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="{"
+            android:hint="S71"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="}"
+            android:hint="S72"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Home"
+            android:hint="122"
+            android:textSize="8sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="↑"
+            android:hint="19"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="End"
+            android:hint="123"
+            android:textSize="10sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PgUp"
+            android:hint="92"
+            android:textSize="9sp" />
+    </LinearLayout>
+    <LinearLayout
+        style="?android:attr/buttonBarStyle"
+        android:layout_width="match_parent"
+        android:layout_height="32sp"
+        android:background="@android:color/black"
+        android:orientation="horizontal">
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="↹"
+            android:hint="61"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Ctrl"
+            android:hint="113"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Alt"
+            android:hint="57"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="⊞"
+            android:hint="117"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="▤"
+            android:hint="82"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PrtSc"
+            android:hint="120"
+            android:textSize="8sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="ScrLk"
+            android:hint="116"
+            android:textSize="8sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Break"
+            android:hint="121"
+            android:textSize="8sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="←"
+            android:hint="21"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="↓"
+            android:hint="20"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="→"
+            android:hint="22"
+            android:textSize="12sp" />
+
+        <Button
+            style="@android:style/Widget.Holo.Button.Borderless.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="PgDn"
+            android:hint="93"
+            android:textSize="9sp" />
+    </LinearLayout>
+</LinearLayout>
