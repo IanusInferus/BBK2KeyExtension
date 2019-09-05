@@ -264,6 +264,9 @@ class KeyExtension : InputMethodService() {
         val isModifier = modifierKeyToMetaState.contains(keyCode) && !isPhysicalAlt
         val ic = currentInputConnection
         currentPressingKeys -= 1
+        if (currentPressingKeys < 0) {
+            currentPressingKeys = 0 //workaround problems on IME switching, which may result with onKeyUp without onKeyDown
+        }
         val onRelease: () -> Unit = {
             if (isModifier) {
                 modifierState = modifierState and modifierKeyToMetaState[keyCode]!!.inv()
