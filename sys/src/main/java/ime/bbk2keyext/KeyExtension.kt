@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
+import android.os.Handler
 import android.os.SystemClock
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -72,6 +73,9 @@ class KeyExtension : InputMethodService() {
 
     override fun onCreateInputView(): View {
         val keyboard = layoutInflater.inflate(R.layout.keys, null) as LinearLayout
+        val handler = Handler()
+        val initialInterval: Long = 500
+        val normalInterval: Long = 50
         for (rowIndex in 0 until keyboard.childCount) {
             val row = keyboard.getChildAt(rowIndex) as LinearLayout
             for (keyIndex in 0 until row.childCount) {
@@ -97,6 +101,7 @@ class KeyExtension : InputMethodService() {
                 keySequences.add(Pair(keyCode, metaState))
                 val isModifier = modifierKeyToMetaState.contains(keyCode)
                 val isLock = lockKeyToMetaState.contains(keyCode)
+                var repeat: Runnable? = null
                 keyButton.setOnTouchListener(object : View.OnTouchListener {
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                         if (v == null || event == null) { return false }
@@ -127,9 +132,24 @@ class KeyExtension : InputMethodService() {
                                     lockState = lockState or m
                                     (v as Button).setBackgroundColor(Color.DKGRAY)
                                 }
+                            } else {
+                                var repeatCount = 0
+                                repeat = Runnable {
+                                    val time = SystemClock.uptimeMillis()
+                                    for (k in keySequences) {
+                                        ic.sendKeyEvent(KeyEvent(time, time, KeyEvent.ACTION_DOWN, k.first, repeatCount, modifierState or lockState or k.second))
+                                    }
+                                    v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
+                                    repeatCount += 1
+                                    handler.postDelayed(repeat, normalInterval)
+                                }
+                                handler.postDelayed(repeat, initialInterval)
                             }
                             return true
                         } else if (event.action == MotionEvent.ACTION_UP) {
+                            if (repeat != null) {
+                                handler.removeCallbacks(repeat)
+                            }
                             currentPressingKeys -= 1
                             val onRelease: () -> Unit = {
                                 if (isModifier) {
