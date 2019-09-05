@@ -26,11 +26,40 @@ class KeyExtension : InputMethodService() {
             Pair(KeyEvent.KEYCODE_NUM_LOCK, KeyEvent.META_NUM_LOCK_ON),
             Pair(KeyEvent.KEYCODE_SCROLL_LOCK, KeyEvent.META_SCROLL_LOCK_ON)
     )
+    val phyiscalKeyboardAltMapping = hashMapOf(
+            Pair(KeyEvent.KEYCODE_Q, Pair(KeyEvent.KEYCODE_POUND, 0)),
+            Pair(KeyEvent.KEYCODE_W, Pair(KeyEvent.KEYCODE_1, 0)),
+            Pair(KeyEvent.KEYCODE_E, Pair(KeyEvent.KEYCODE_2, 0)),
+            Pair(KeyEvent.KEYCODE_R, Pair(KeyEvent.KEYCODE_3, 0)),
+            Pair(KeyEvent.KEYCODE_T, Pair(KeyEvent.KEYCODE_9, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_Y, Pair(KeyEvent.KEYCODE_0, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_U, Pair(KeyEvent.KEYCODE_MINUS, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_I, Pair(KeyEvent.KEYCODE_MINUS, 0)),
+            Pair(KeyEvent.KEYCODE_O, Pair(KeyEvent.KEYCODE_EQUALS, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_P, Pair(KeyEvent.KEYCODE_2, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_A, Pair(KeyEvent.KEYCODE_8, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_S, Pair(KeyEvent.KEYCODE_4, 0)),
+            Pair(KeyEvent.KEYCODE_D, Pair(KeyEvent.KEYCODE_5, 0)),
+            Pair(KeyEvent.KEYCODE_F, Pair(KeyEvent.KEYCODE_6, 0)),
+            Pair(KeyEvent.KEYCODE_G, Pair(KeyEvent.KEYCODE_SLASH, 0)),
+            Pair(KeyEvent.KEYCODE_H, Pair(KeyEvent.KEYCODE_SEMICOLON, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_J, Pair(KeyEvent.KEYCODE_SEMICOLON, 0)),
+            Pair(KeyEvent.KEYCODE_K, Pair(KeyEvent.KEYCODE_APOSTROPHE, 0)),
+            Pair(KeyEvent.KEYCODE_L, Pair(KeyEvent.KEYCODE_APOSTROPHE, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_Z, Pair(KeyEvent.KEYCODE_7, 0)),
+            Pair(KeyEvent.KEYCODE_X, Pair(KeyEvent.KEYCODE_8, 0)),
+            Pair(KeyEvent.KEYCODE_C, Pair(KeyEvent.KEYCODE_9, 0)),
+            Pair(KeyEvent.KEYCODE_V, Pair(KeyEvent.KEYCODE_SLASH, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_B, Pair(KeyEvent.KEYCODE_1, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
+            Pair(KeyEvent.KEYCODE_N, Pair(KeyEvent.KEYCODE_COMMA, 0)),
+            Pair(KeyEvent.KEYCODE_M, Pair(KeyEvent.KEYCODE_PERIOD, 0))
+    )
 
     var currentPressedKeys = 0
     var currentPressingKeys = 0
     var modifierState = 0
     var lockState = 0
+    var physicalAltOn = false
     var modifierReleasing = false
     val resetModifiers = ArrayList<() -> Unit>()
     val releaseModifiers = ArrayList<() -> Unit>()
@@ -67,8 +96,8 @@ class KeyExtension : InputMethodService() {
                         if (v == null || event == null) { return false }
                         val ic = currentInputConnection
                         if (event.action == MotionEvent.ACTION_DOWN) {
-                            currentPressedKeys += 1
                             currentPressingKeys += 1
+                            currentPressedKeys += 1
                             for (k in keySequences) {
                                 ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, k.first, 0, modifierState or lockState or k.second))
                             }
@@ -83,7 +112,6 @@ class KeyExtension : InputMethodService() {
                                     modifierState = modifierState or m
                                     (v as Button).setBackgroundColor(Color.DKGRAY)
                                 }
-                                return true
                             } else if (isLock) {
                                 val m = lockKeyToMetaState[keyCode]!!
                                 if ((lockState and m) != 0) {
@@ -167,10 +195,97 @@ class KeyExtension : InputMethodService() {
         currentPressedKeys = 0
         currentPressingKeys = 0
         modifierState = 0
+        physicalAltOn = false
         modifierReleasing = false
         for (f in resetModifiers) {
             f()
         }
         releaseModifiers.clear()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event == null) { return false }
+        val isPhysicalAlt = event.keyCode == KeyEvent.KEYCODE_ALT_LEFT
+        val isModifier = modifierKeyToMetaState.contains(keyCode) && !isPhysicalAlt
+        val isLock = lockKeyToMetaState.contains(keyCode)
+        val ic = currentInputConnection
+        if (event.repeatCount == 0) {
+            currentPressingKeys += 1
+            currentPressedKeys += 1
+        }
+        if (isPhysicalAlt) {
+            if (physicalAltOn) {
+                physicalAltOn = false
+                //(v as Button).setBackgroundColor(Color.BLACK)
+                modifierReleasing = true
+            } else {
+                physicalAltOn = true
+                //(v as Button).setBackgroundColor(Color.DKGRAY)
+            }
+            return true
+        } else if (physicalAltOn) {
+            val p = phyiscalKeyboardAltMapping[event.keyCode] ?: Pair(event.keyCode, 0)
+            ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, p.first, event.repeatCount, modifierState or lockState or (event.metaState and KeyEvent.META_ALT_MASK.inv()) or p.second))
+        } else {
+            ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, event.keyCode, event.repeatCount, modifierState or lockState or event.metaState))
+        }
+        if (isModifier) {
+            val m = modifierKeyToMetaState[keyCode]!!
+            if ((modifierState and m) != 0) {
+                modifierState = modifierState and m.inv()
+                //(v as Button).setBackgroundColor(Color.BLACK)
+                modifierReleasing = true
+            } else {
+                modifierState = modifierState or m
+                //(v as Button).setBackgroundColor(Color.DKGRAY)
+            }
+        } else if (isLock) {
+            val m = lockKeyToMetaState[keyCode]!!
+            if ((lockState and m) != 0) {
+                lockState = lockState and m.inv()
+                //(v as Button).setBackgroundColor(Color.BLACK)
+            } else {
+                lockState = lockState or m
+                //(v as Button).setBackgroundColor(Color.DKGRAY)
+            }
+        }
+        return true
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event == null) { return false }
+        val isPhysicalAlt = event.keyCode == KeyEvent.KEYCODE_ALT_LEFT
+        val isModifier = modifierKeyToMetaState.contains(keyCode) && !isPhysicalAlt
+        val ic = currentInputConnection
+        currentPressingKeys -= 1
+        val onRelease: () -> Unit = {
+            if (isModifier) {
+                modifierState = modifierState and modifierKeyToMetaState[keyCode]!!.inv()
+                //(v as Button).setBackgroundColor(Color.BLACK)
+            }
+            if (isPhysicalAlt) {
+                physicalAltOn = false
+                //(v as Button).setBackgroundColor(Color.BLACK)
+            } else if (physicalAltOn) {
+                val p = phyiscalKeyboardAltMapping[event.keyCode] ?: Pair(event.keyCode, 0)
+                ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, p.first, event.repeatCount, modifierState or lockState or (event.metaState and KeyEvent.META_ALT_MASK.inv()) or p.second))
+            } else {
+                ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, event.keyCode, event.repeatCount, modifierState or lockState or event.metaState))
+            }
+        }
+        if ((isModifier || isPhysicalAlt) && (currentPressedKeys <= 1) && !modifierReleasing) {
+            releaseModifiers.add(onRelease)
+        } else {
+            onRelease()
+            for (r in releaseModifiers.reversed()) {
+                r()
+            }
+            releaseModifiers.clear()
+        }
+        if (currentPressingKeys == 0) {
+            currentPressedKeys = 0
+            modifierReleasing = false
+        }
+        return super.onKeyUp(keyCode, event)
     }
 }
