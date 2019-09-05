@@ -255,9 +255,8 @@ class KeyExtension : InputMethodService() {
             updateInputViewShown()
             if (!isInputViewShown) {
                 val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                if (manager != null) {
-                    manager.showSoftInputFromInputMethod(window.window.attributes.token, InputMethodManager.SHOW_FORCED)
-                }
+                @Suppress("DEPRECATION")
+                manager.showSoftInputFromInputMethod(window!!.window!!.attributes.token, InputMethodManager.SHOW_FORCED)
             }
         } else if (isPhysicalAlt) {
             if (physicalAltOn) {
