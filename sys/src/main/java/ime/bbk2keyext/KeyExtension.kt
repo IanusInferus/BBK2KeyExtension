@@ -137,7 +137,7 @@ class KeyExtension : InputMethodService() {
                                 repeat = Runnable {
                                     val time = SystemClock.uptimeMillis()
                                     for (k in keySequences) {
-                                        ic.sendKeyEvent(KeyEvent(time, time, KeyEvent.ACTION_DOWN, k.first, repeatCount, modifierState or lockState or k.second))
+                                        ic.sendKeyEvent(KeyEvent(event.downTime, time, KeyEvent.ACTION_DOWN, k.first, repeatCount, modifierState or lockState or k.second))
                                     }
                                     v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
                                     repeatCount += 1
@@ -149,6 +149,7 @@ class KeyExtension : InputMethodService() {
                         } else if (event.action == MotionEvent.ACTION_UP) {
                             if (repeat != null) {
                                 handler.removeCallbacks(repeat)
+                                repeat = null
                             }
                             currentPressingKeys -= 1
                             val onRelease: () -> Unit = {
@@ -276,7 +277,7 @@ class KeyExtension : InputMethodService() {
         } else {
             ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, event.keyCode, event.repeatCount, modifierState or lockState or event.metaState))
         }
-        if (isModifier) {
+        if (isModifier && (event.repeatCount == 0)) {
             val m = modifierKeyToMetaState[keyCode]!!
             if ((modifierState and m) != 0) {
                 modifierState = modifierState and m.inv()
@@ -298,7 +299,7 @@ class KeyExtension : InputMethodService() {
                     updateStatusIcon()
                 }
             }
-        } else if (isLock) {
+        } else if (isLock && (event.repeatCount == 0)) {
             val m = lockKeyToMetaState[keyCode]!!
             if ((lockState and m) != 0) {
                 lockState = lockState and m.inv()
@@ -355,6 +356,6 @@ class KeyExtension : InputMethodService() {
             currentPressedKeys = 0
             modifierReleasing = false
         }
-        return super.onKeyUp(keyCode, event)
+        return true
     }
 }
