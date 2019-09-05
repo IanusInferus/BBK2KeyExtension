@@ -55,6 +55,7 @@ class KeyExtension : InputMethodService() {
             Pair(KeyEvent.KEYCODE_M, Pair(KeyEvent.KEYCODE_PERIOD, 0))
     )
 
+    var virtualKeyboardVisible = true
     var currentPressedKeys = 0
     var currentPressingKeys = 0
     var modifierState = 0
@@ -183,7 +184,7 @@ class KeyExtension : InputMethodService() {
 
     override fun onEvaluateInputViewShown(): Boolean {
         super.onEvaluateInputViewShown()
-        return true
+        return virtualKeyboardVisible
     }
 
     override fun onFinishInput() {
@@ -205,6 +206,7 @@ class KeyExtension : InputMethodService() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (event == null) { return false }
+        val isPhysicalSym = event.keyCode == KeyEvent.KEYCODE_SYM
         val isPhysicalAlt = event.keyCode == KeyEvent.KEYCODE_ALT_LEFT
         val isModifier = modifierKeyToMetaState.contains(keyCode) && !isPhysicalAlt
         val isLock = lockKeyToMetaState.contains(keyCode)
@@ -213,7 +215,10 @@ class KeyExtension : InputMethodService() {
             currentPressingKeys += 1
             currentPressedKeys += 1
         }
-        if (isPhysicalAlt) {
+        if (isPhysicalSym) {
+            virtualKeyboardVisible = !virtualKeyboardVisible
+            updateInputViewShown()
+        } else if (isPhysicalAlt) {
             if (physicalAltOn) {
                 physicalAltOn = false
                 //(v as Button).setBackgroundColor(Color.BLACK)
@@ -254,6 +259,7 @@ class KeyExtension : InputMethodService() {
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
         if (event == null) { return false }
+        val isPhysicalSym = event.keyCode == KeyEvent.KEYCODE_SYM
         val isPhysicalAlt = event.keyCode == KeyEvent.KEYCODE_ALT_LEFT
         val isModifier = modifierKeyToMetaState.contains(keyCode) && !isPhysicalAlt
         val ic = currentInputConnection
@@ -263,7 +269,8 @@ class KeyExtension : InputMethodService() {
                 modifierState = modifierState and modifierKeyToMetaState[keyCode]!!.inv()
                 //(v as Button).setBackgroundColor(Color.BLACK)
             }
-            if (isPhysicalAlt) {
+            if (isPhysicalSym) {
+            } else if (isPhysicalAlt) {
                 physicalAltOn = false
                 //(v as Button).setBackgroundColor(Color.BLACK)
             } else if (physicalAltOn) {
