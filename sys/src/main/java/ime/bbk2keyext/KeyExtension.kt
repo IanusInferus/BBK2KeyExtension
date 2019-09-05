@@ -1,4 +1,4 @@
-package ime.bbk2kext
+package ime.bbk2keyext
 
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
