@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.view.HapticFeedbackConstants
 import android.view.inputmethod.InputMethodManager
+import kotlin.collections.ArrayList
 
 class KeyExtension : InputMethodService() {
     val modifierKeyToMetaState = hashMapOf(
@@ -67,6 +68,7 @@ class KeyExtension : InputMethodService() {
     var modifierReleasing = false
     val resetModifiers = ArrayList<() -> Unit>()
     val releaseModifiers = ArrayList<() -> Unit>()
+    var statusIcons = ArrayList<Int>()
 
     override fun onCreateInputView(): View {
         val keyboard = layoutInflater.inflate(R.layout.keys, null) as LinearLayout
@@ -205,6 +207,16 @@ class KeyExtension : InputMethodService() {
             f()
         }
         releaseModifiers.clear()
+        statusIcons.clear()
+        hideStatusIcon()
+    }
+
+    fun updateStatusIcon() {
+        if (statusIcons.size > 0) {
+            showStatusIcon(statusIcons.last())
+        } else {
+            hideStatusIcon()
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -230,11 +242,13 @@ class KeyExtension : InputMethodService() {
         } else if (isPhysicalAlt) {
             if (physicalAltOn) {
                 physicalAltOn = false
-                //(v as Button).setBackgroundColor(Color.BLACK)
+                statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.palt })
+                updateStatusIcon()
                 modifierReleasing = true
             } else {
                 physicalAltOn = true
-                //(v as Button).setBackgroundColor(Color.DKGRAY)
+                statusIcons.add(R.drawable.palt)
+                updateStatusIcon()
             }
             return true
         } else if (physicalAltOn) {
@@ -247,20 +261,30 @@ class KeyExtension : InputMethodService() {
             val m = modifierKeyToMetaState[keyCode]!!
             if ((modifierState and m) != 0) {
                 modifierState = modifierState and m.inv()
-                //(v as Button).setBackgroundColor(Color.BLACK)
+                if (keyCode == KeyEvent.KEYCODE_CTRL_LEFT) {
+                    statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.ctrl })
+                    updateStatusIcon()
+                } else if (keyCode == KeyEvent.KEYCODE_SHIFT_LEFT) {
+                    statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.shift })
+                    updateStatusIcon()
+                }
                 modifierReleasing = true
             } else {
                 modifierState = modifierState or m
-                //(v as Button).setBackgroundColor(Color.DKGRAY)
+                if (keyCode == KeyEvent.KEYCODE_CTRL_LEFT) {
+                    statusIcons.add(R.drawable.ctrl)
+                    updateStatusIcon()
+                } else if (keyCode == KeyEvent.KEYCODE_SHIFT_LEFT) {
+                    statusIcons.add(R.drawable.shift)
+                    updateStatusIcon()
+                }
             }
         } else if (isLock) {
             val m = lockKeyToMetaState[keyCode]!!
             if ((lockState and m) != 0) {
                 lockState = lockState and m.inv()
-                //(v as Button).setBackgroundColor(Color.BLACK)
             } else {
                 lockState = lockState or m
-                //(v as Button).setBackgroundColor(Color.DKGRAY)
             }
         }
         return true
@@ -279,12 +303,19 @@ class KeyExtension : InputMethodService() {
         val onRelease: () -> Unit = {
             if (isModifier) {
                 modifierState = modifierState and modifierKeyToMetaState[keyCode]!!.inv()
-                //(v as Button).setBackgroundColor(Color.BLACK)
+                if (keyCode == KeyEvent.KEYCODE_CTRL_LEFT) {
+                    statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.ctrl })
+                    updateStatusIcon()
+                } else if (keyCode == KeyEvent.KEYCODE_SHIFT_LEFT) {
+                    statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.shift })
+                    updateStatusIcon()
+                }
             }
             if (isPhysicalSym) {
             } else if (isPhysicalAlt) {
                 physicalAltOn = false
-                //(v as Button).setBackgroundColor(Color.BLACK)
+                statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.palt })
+                updateStatusIcon()
             } else if (physicalAltOn) {
                 val p = phyiscalKeyboardAltMapping[event.keyCode] ?: Pair(event.keyCode, 0)
                 ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, p.first, event.repeatCount, modifierState or lockState or (event.metaState and KeyEvent.META_ALT_MASK.inv()) or p.second))
