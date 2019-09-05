@@ -1,5 +1,7 @@
 package ime.bbk2keyext
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.SystemClock
@@ -9,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.view.HapticFeedbackConstants
+import android.view.inputmethod.InputMethodManager
 
 class KeyExtension : InputMethodService() {
     val modifierKeyToMetaState = hashMapOf(
@@ -182,8 +185,8 @@ class KeyExtension : InputMethodService() {
         return keyboard
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onEvaluateInputViewShown(): Boolean {
-        super.onEvaluateInputViewShown()
         return virtualKeyboardVisible
     }
 
@@ -216,8 +219,14 @@ class KeyExtension : InputMethodService() {
             currentPressedKeys += 1
         }
         if (isPhysicalSym) {
-            virtualKeyboardVisible = !virtualKeyboardVisible
+            virtualKeyboardVisible = !isInputViewShown
             updateInputViewShown()
+            if (!isInputViewShown) {
+                val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                if (manager != null) {
+                    manager.showSoftInputFromInputMethod(window.window.attributes.token, InputMethodManager.SHOW_FORCED)
+                }
+            }
         } else if (isPhysicalAlt) {
             if (physicalAltOn) {
                 physicalAltOn = false
