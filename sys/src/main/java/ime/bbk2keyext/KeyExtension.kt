@@ -259,15 +259,17 @@ class KeyExtension : InputMethodService() {
                 manager.showSoftInputFromInputMethod(window!!.window!!.attributes.token, InputMethodManager.SHOW_FORCED)
             }
         } else if (isPhysicalAlt) {
-            if (physicalAltOn) {
-                physicalAltOn = false
-                statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.palt })
-                updateStatusIcon()
-                modifierReleasing = true
-            } else {
-                physicalAltOn = true
-                statusIcons.add(R.drawable.palt)
-                updateStatusIcon()
+            if (event.repeatCount == 0) {
+                if (physicalAltOn) {
+                    physicalAltOn = false
+                    statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.palt })
+                    updateStatusIcon()
+                    modifierReleasing = true
+                } else {
+                    physicalAltOn = true
+                    statusIcons.add(R.drawable.palt)
+                    updateStatusIcon()
+                }
             }
             return true
         } else if (physicalAltOn) {
