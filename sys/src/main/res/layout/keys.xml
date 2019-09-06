@@ -3,6 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <!--
+        android:hint is misused for representing key code information.
+        format: [CSAW]* \d+ '-' \d+
+        where C S A W represents Ctrl Shift Alt Win,
+        the first number is keyCode (KeyEvent.KEYCODE_*)
+        the second number is scanCode (it can be looked up in /system/usr/keylayout/Generic.kl on an Android device)
+        scanCode is misused by programs like Microsoft RDP (which misbehaves with Ctrl modifier and without a proper scanCode)
+    -->
     <LinearLayout
         style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
@@ -15,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F1"
-            android:hint="131"
+            android:hint="131-59"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -23,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F2"
-            android:hint="132"
+            android:hint="132-60"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -31,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F3"
-            android:hint="133"
+            android:hint="133-61"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -39,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F4"
-            android:hint="134"
+            android:hint="134-62"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -47,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F5"
-            android:hint="135"
+            android:hint="135-63"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -55,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F6"
-            android:hint="136"
+            android:hint="136-64"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -63,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F7"
-            android:hint="137"
+            android:hint="137-65"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -71,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F8"
-            android:hint="138"
+            android:hint="138-66"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -79,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F9"
-            android:hint="139"
+            android:hint="139-67"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -87,7 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F10"
-            android:hint="140"
+            android:hint="140-68"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -95,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F11"
-            android:hint="141"
+            android:hint="141-87"
             android:textSize="12sp" />
         <Button
             style="@android:style/Widget.Holo.Button.Borderless.Small"
@@ -103,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="F12"
-            android:hint="142"
+            android:hint="142-88"
             android:textSize="12sp" />
     </LinearLayout>
     <LinearLayout
@@ -119,7 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="~"
-            android:hint="S68"
+            android:hint="S68-41"
             android:textSize="12sp" />
 
         <Button
@@ -128,7 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="`"
-            android:hint="68"
+            android:hint="68-41"
             android:textSize="12sp" />
 
         <Button
@@ -137,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="$"
-            android:hint="S11"
+            android:hint="S11-5"
             android:textSize="12sp" />
 
         <Button
@@ -146,7 +154,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="%"
-            android:hint="S12"
+            android:hint="S12-6"
             android:textSize="12sp" />
 
         <Button
@@ -155,7 +163,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="^"
-            android:hint="S13"
+            android:hint="S13-7"
             android:textSize="12sp" />
 
         <Button
@@ -164,7 +172,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="&amp;"
-            android:hint="S14"
+            android:hint="S14-8"
             android:textSize="12sp" />
 
         <Button
@@ -173,7 +181,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="="
-            android:hint="70"
+            android:hint="70-13"
             android:textSize="12sp" />
 
         <Button
@@ -182,7 +190,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="|"
-            android:hint="S73"
+            android:hint="S73-43"
             android:textSize="12sp" />
 
         <Button
@@ -191,7 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="\\"
-            android:hint="73"
+            android:hint="73-43"
             android:textSize="12sp" />
 
         <Button
@@ -200,7 +208,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Ins"
-            android:hint="124"
+            android:hint="124-110"
             android:textSize="12sp" />
 
         <Button
@@ -209,7 +217,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Del"
-            android:hint="112"
+            android:hint="112-111"
             android:textSize="12sp" />
 
         <Button
@@ -233,7 +241,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Esc"
-            android:hint="111"
+            android:hint="111-1"
             android:textSize="12sp" />
 
         <Button
@@ -242,7 +250,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Caps"
-            android:hint="115"
+            android:hint="115-58"
             android:textSize="10sp" />
 
         <Button
@@ -251,7 +259,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="&lt;"
-            android:hint="S55"
+            android:hint="S55-51"
             android:textSize="12sp" />
 
         <Button
@@ -260,7 +268,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="&gt;"
-            android:hint="S56"
+            android:hint="S56-52"
             android:textSize="12sp" />
 
         <Button
@@ -269,7 +277,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="["
-            android:hint="71"
+            android:hint="71-26"
             android:textSize="12sp" />
 
         <Button
@@ -278,7 +286,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="]"
-            android:hint="72"
+            android:hint="72-27"
             android:textSize="12sp" />
 
         <Button
@@ -287,7 +295,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="{"
-            android:hint="S71"
+            android:hint="S71-26"
             android:textSize="12sp" />
 
         <Button
@@ -296,7 +304,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="}"
-            android:hint="S72"
+            android:hint="S72-27"
             android:textSize="12sp" />
 
         <Button
@@ -305,7 +313,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Home"
-            android:hint="122"
+            android:hint="122-102"
             android:textSize="8sp" />
 
         <Button
@@ -314,7 +322,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="↑"
-            android:hint="19"
+            android:hint="19-103"
             android:textSize="12sp" />
 
         <Button
@@ -323,7 +331,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="End"
-            android:hint="123"
+            android:hint="123-107"
             android:textSize="10sp" />
 
         <Button
@@ -332,7 +340,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="PgUp"
-            android:hint="92"
+            android:hint="92-104"
             android:textSize="9sp" />
     </LinearLayout>
     <LinearLayout
@@ -348,7 +356,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="↹"
-            android:hint="61"
+            android:hint="61-15"
             android:textSize="12sp" />
 
         <Button
@@ -357,7 +365,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Ctrl"
-            android:hint="113"
+            android:hint="113-29"
             android:textSize="12sp" />
 
         <Button
@@ -366,7 +374,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Alt"
-            android:hint="57"
+            android:hint="57-56"
             android:textSize="12sp" />
 
         <Button
@@ -375,7 +383,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="⊞"
-            android:hint="117"
+            android:hint="117-125"
             android:textSize="12sp" />
 
         <Button
@@ -384,7 +392,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="▤"
-            android:hint="82"
+            android:hint="82-127"
             android:textSize="12sp" />
 
         <Button
@@ -393,7 +401,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="PrtSc"
-            android:hint="120"
+            android:hint="120-99"
             android:textSize="8sp" />
 
         <Button
@@ -402,7 +410,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="ScrLk"
-            android:hint="116"
+            android:hint="116-70"
             android:textSize="8sp" />
 
         <Button
@@ -411,7 +419,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Break"
-            android:hint="121"
+            android:hint="121-119"
             android:textSize="8sp" />
 
         <Button
@@ -420,7 +428,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="←"
-            android:hint="21"
+            android:hint="21-105"
             android:textSize="12sp" />
 
         <Button
@@ -429,7 +437,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="↓"
-            android:hint="20"
+            android:hint="20-108"
             android:textSize="12sp" />
 
         <Button
@@ -438,7 +446,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="→"
-            android:hint="22"
+            android:hint="22-106"
             android:textSize="12sp" />
 
         <Button
@@ -447,7 +455,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="PgDn"
-            android:hint="93"
+            android:hint="93-109"
             android:textSize="9sp" />
     </LinearLayout>
 </LinearLayout>
