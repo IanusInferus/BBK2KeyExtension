@@ -6,16 +6,17 @@ import android.graphics.Color
 import android.inputmethodservice.InputMethodService
 import android.os.Handler
 import android.os.SystemClock
-import android.view.KeyEvent
-import android.view.MotionEvent
-import android.view.View
+import android.util.Log
+import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
-import android.view.HapticFeedbackConstants
 import android.view.inputmethod.InputMethodManager
 import kotlin.collections.ArrayList
 
 class KeyExtension : InputMethodService() {
+    val logOn = false
+    val tag = "BBK2KEXT"
+
     val modifierKeyToMetaState = hashMapOf(
             Pair(KeyEvent.KEYCODE_CTRL_LEFT, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON),
             Pair(KeyEvent.KEYCODE_CTRL_RIGHT, KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_RIGHT_ON),
@@ -31,33 +32,34 @@ class KeyExtension : InputMethodService() {
             Pair(KeyEvent.KEYCODE_NUM_LOCK, KeyEvent.META_NUM_LOCK_ON),
             Pair(KeyEvent.KEYCODE_SCROLL_LOCK, KeyEvent.META_SCROLL_LOCK_ON)
     )
+    //KeyCode to alt mapped keyCode and metaState and scanCode (it can be looked up in /system/usr/keylayout/Generic.kl on an Android device)
     val phyiscalKeyboardAltMapping = hashMapOf(
-            Pair(KeyEvent.KEYCODE_Q, Pair(KeyEvent.KEYCODE_POUND, 0)),
-            Pair(KeyEvent.KEYCODE_W, Pair(KeyEvent.KEYCODE_1, 0)),
-            Pair(KeyEvent.KEYCODE_E, Pair(KeyEvent.KEYCODE_2, 0)),
-            Pair(KeyEvent.KEYCODE_R, Pair(KeyEvent.KEYCODE_3, 0)),
-            Pair(KeyEvent.KEYCODE_T, Pair(KeyEvent.KEYCODE_9, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_Y, Pair(KeyEvent.KEYCODE_0, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_U, Pair(KeyEvent.KEYCODE_MINUS, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_I, Pair(KeyEvent.KEYCODE_MINUS, 0)),
-            Pair(KeyEvent.KEYCODE_O, Pair(KeyEvent.KEYCODE_EQUALS, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_P, Pair(KeyEvent.KEYCODE_2, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_A, Pair(KeyEvent.KEYCODE_8, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_S, Pair(KeyEvent.KEYCODE_4, 0)),
-            Pair(KeyEvent.KEYCODE_D, Pair(KeyEvent.KEYCODE_5, 0)),
-            Pair(KeyEvent.KEYCODE_F, Pair(KeyEvent.KEYCODE_6, 0)),
-            Pair(KeyEvent.KEYCODE_G, Pair(KeyEvent.KEYCODE_SLASH, 0)),
-            Pair(KeyEvent.KEYCODE_H, Pair(KeyEvent.KEYCODE_SEMICOLON, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_J, Pair(KeyEvent.KEYCODE_SEMICOLON, 0)),
-            Pair(KeyEvent.KEYCODE_K, Pair(KeyEvent.KEYCODE_APOSTROPHE, 0)),
-            Pair(KeyEvent.KEYCODE_L, Pair(KeyEvent.KEYCODE_APOSTROPHE, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_Z, Pair(KeyEvent.KEYCODE_7, 0)),
-            Pair(KeyEvent.KEYCODE_X, Pair(KeyEvent.KEYCODE_8, 0)),
-            Pair(KeyEvent.KEYCODE_C, Pair(KeyEvent.KEYCODE_9, 0)),
-            Pair(KeyEvent.KEYCODE_V, Pair(KeyEvent.KEYCODE_SLASH, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_B, Pair(KeyEvent.KEYCODE_1, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON)),
-            Pair(KeyEvent.KEYCODE_N, Pair(KeyEvent.KEYCODE_COMMA, 0)),
-            Pair(KeyEvent.KEYCODE_M, Pair(KeyEvent.KEYCODE_PERIOD, 0))
+            Pair(KeyEvent.KEYCODE_Q, Triple(KeyEvent.KEYCODE_POUND, 0, 16)),
+            Pair(KeyEvent.KEYCODE_W, Triple(KeyEvent.KEYCODE_1, 0, 2)),
+            Pair(KeyEvent.KEYCODE_E, Triple(KeyEvent.KEYCODE_2, 0, 3)),
+            Pair(KeyEvent.KEYCODE_R, Triple(KeyEvent.KEYCODE_3, 0, 4)),
+            Pair(KeyEvent.KEYCODE_T, Triple(KeyEvent.KEYCODE_9, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 10)),
+            Pair(KeyEvent.KEYCODE_Y, Triple(KeyEvent.KEYCODE_0, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 11)),
+            Pair(KeyEvent.KEYCODE_U, Triple(KeyEvent.KEYCODE_MINUS, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 12)),
+            Pair(KeyEvent.KEYCODE_I, Triple(KeyEvent.KEYCODE_MINUS, 0, 12)),
+            Pair(KeyEvent.KEYCODE_O, Triple(KeyEvent.KEYCODE_EQUALS, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 13)),
+            Pair(KeyEvent.KEYCODE_P, Triple(KeyEvent.KEYCODE_2, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 3)),
+            Pair(KeyEvent.KEYCODE_A, Triple(KeyEvent.KEYCODE_8, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 9)),
+            Pair(KeyEvent.KEYCODE_S, Triple(KeyEvent.KEYCODE_4, 0, 5)),
+            Pair(KeyEvent.KEYCODE_D, Triple(KeyEvent.KEYCODE_5, 0, 6)),
+            Pair(KeyEvent.KEYCODE_F, Triple(KeyEvent.KEYCODE_6, 0, 7)),
+            Pair(KeyEvent.KEYCODE_G, Triple(KeyEvent.KEYCODE_SLASH, 0, 53)),
+            Pair(KeyEvent.KEYCODE_H, Triple(KeyEvent.KEYCODE_SEMICOLON, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 39)),
+            Pair(KeyEvent.KEYCODE_J, Triple(KeyEvent.KEYCODE_SEMICOLON, 0, 39)),
+            Pair(KeyEvent.KEYCODE_K, Triple(KeyEvent.KEYCODE_APOSTROPHE, 0, 40)),
+            Pair(KeyEvent.KEYCODE_L, Triple(KeyEvent.KEYCODE_APOSTROPHE, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 40)),
+            Pair(KeyEvent.KEYCODE_Z, Triple(KeyEvent.KEYCODE_7, 0, 8)),
+            Pair(KeyEvent.KEYCODE_X, Triple(KeyEvent.KEYCODE_8, 0, 9)),
+            Pair(KeyEvent.KEYCODE_C, Triple(KeyEvent.KEYCODE_9, 0, 10)),
+            Pair(KeyEvent.KEYCODE_V, Triple(KeyEvent.KEYCODE_SLASH, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 53)),
+            Pair(KeyEvent.KEYCODE_B, Triple(KeyEvent.KEYCODE_1, KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON, 2)),
+            Pair(KeyEvent.KEYCODE_N, Triple(KeyEvent.KEYCODE_COMMA, 0, 51)),
+            Pair(KeyEvent.KEYCODE_M, Triple(KeyEvent.KEYCODE_PERIOD, 0, 52))
     )
 
     var virtualKeyboardVisible = true
@@ -71,6 +73,7 @@ class KeyExtension : InputMethodService() {
     val releaseModifiers = ArrayList<() -> Unit>()
     var statusIcons = ArrayList<Int>()
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateInputView(): View {
         val keyboard = layoutInflater.inflate(R.layout.keys, null) as LinearLayout
         val handler = Handler()
@@ -80,25 +83,30 @@ class KeyExtension : InputMethodService() {
             val row = keyboard.getChildAt(rowIndex) as LinearLayout
             for (keyIndex in 0 until row.childCount) {
                 val keyButton = row.getChildAt(keyIndex) as Button
-                val keyCodeStr = keyButton.hint?.toString() ?: "62"
-                var keySequences = ArrayList<Pair<Int, Int>>()
+                val keyInfo = keyButton.hint?.toString() ?: ""
+                if (keyInfo == "") { continue }
+                val rKeyInfo = Regex("""(?<Modifiers>[CSAW]*)(?<KeyCode>\d+)-(?<ScanCode>\d+)""")
+                val (modifiers, keyCodeStr, scanCodeStr) = rKeyInfo.matchEntire(keyInfo)?.destructured ?: continue
+                val keyCode = keyCodeStr.toInt()
+                val scanCode = scanCodeStr.toInt()
+                var keySequences = ArrayList<Triple<Int, Int, Int>>()
                 var metaState = 0
-                if (keyCodeStr.startsWith("C")) {
-                    keySequences.add(Pair(KeyEvent.KEYCODE_CTRL_LEFT, metaState))
-                    metaState = metaState or KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON
-                } else if (keyCodeStr.startsWith("S")) {
-                    keySequences.add(Pair(KeyEvent.KEYCODE_SHIFT_LEFT, metaState))
-                    metaState = metaState or KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON
-                } else if (keyCodeStr.startsWith("A")) {
-                    keySequences.add(Pair(KeyEvent.KEYCODE_ALT_LEFT, metaState))
-                    metaState = metaState or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON
-                } else if (keyCodeStr.startsWith("W")) {
-                    keySequences.add(Pair(KeyEvent.KEYCODE_META_LEFT, metaState))
-                    metaState = metaState or KeyEvent.META_META_ON or KeyEvent.META_META_LEFT_ON
+                for (modifier in modifiers) {
+                    if (modifier== 'C') {
+                        keySequences.add(Triple(KeyEvent.KEYCODE_CTRL_LEFT, metaState, 29))
+                        metaState = metaState or KeyEvent.META_CTRL_ON or KeyEvent.META_CTRL_LEFT_ON
+                    } else if (modifier == 'S') {
+                        keySequences.add(Triple(KeyEvent.KEYCODE_SHIFT_LEFT, metaState, 42))
+                        metaState = metaState or KeyEvent.META_SHIFT_ON or KeyEvent.META_SHIFT_LEFT_ON
+                    } else if (modifier == 'A') {
+                        keySequences.add(Triple(KeyEvent.KEYCODE_ALT_LEFT, metaState, 56))
+                        metaState = metaState or KeyEvent.META_ALT_ON or KeyEvent.META_ALT_LEFT_ON
+                    } else if (modifier == 'W') {
+                        keySequences.add(Triple(KeyEvent.KEYCODE_META_LEFT, metaState, 125))
+                        metaState = metaState or KeyEvent.META_META_ON or KeyEvent.META_META_LEFT_ON
+                    }
                 }
-                val keyCodeNumStr = keyCodeStr.replace("C", "").replace("S", "").replace("A", "").replace("W", "")
-                val keyCode = keyCodeNumStr.toInt()
-                keySequences.add(Pair(keyCode, metaState))
+                keySequences.add(Triple(keyCode, metaState, scanCode))
                 val isModifier = modifierKeyToMetaState.contains(keyCode)
                 val isLock = lockKeyToMetaState.contains(keyCode)
                 var repeat: Runnable? = null
@@ -110,7 +118,9 @@ class KeyExtension : InputMethodService() {
                             currentPressingKeys += 1
                             currentPressedKeys += 1
                             for (k in keySequences) {
-                                ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, k.first, 0, modifierState or lockState or k.second))
+                                val e = KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, k.first, 0, modifierState or lockState or k.second, KeyCharacterMap.VIRTUAL_KEYBOARD, k.third)
+                                if (logOn) { Log.i(tag, "down ${e.downTime} event ${e.eventTime} keyCode ${e.keyCode} scanCode ${e.scanCode} number ${e.number} unicode ${e.unicodeChar} rep ${e.repeatCount} ms ${e.metaState}") }
+                                ic.sendKeyEvent(e)
                             }
                             v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
                             if (isModifier) {
@@ -137,7 +147,9 @@ class KeyExtension : InputMethodService() {
                                 repeat = Runnable {
                                     val time = SystemClock.uptimeMillis()
                                     for (k in keySequences) {
-                                        ic.sendKeyEvent(KeyEvent(event.downTime, time, KeyEvent.ACTION_DOWN, k.first, repeatCount, modifierState or lockState or k.second))
+                                        val e = KeyEvent(event.downTime, time, KeyEvent.ACTION_DOWN, k.first, repeatCount, modifierState or lockState or k.second, KeyCharacterMap.VIRTUAL_KEYBOARD, k.third)
+                                        if (logOn) { Log.i(tag, "down ${e.downTime} event ${e.eventTime} keyCode ${e.keyCode} scanCode ${e.scanCode} number ${e.number} unicode ${e.unicodeChar} rep ${e.repeatCount} ms ${e.metaState}") }
+                                        ic.sendKeyEvent(e)
                                     }
                                     v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
                                     repeatCount += 1
@@ -158,7 +170,9 @@ class KeyExtension : InputMethodService() {
                                     (v as Button).setBackgroundColor(Color.BLACK)
                                 }
                                 for (k in keySequences.reversed()) {
-                                    ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, k.first, 0, modifierState or lockState or k.second))
+                                    val e = KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, k.first, 0, modifierState or lockState or k.second, KeyCharacterMap.VIRTUAL_KEYBOARD, k.third)
+                                    if (logOn) { Log.i(tag, "up ${e.downTime} event ${e.eventTime} keyCode ${e.keyCode} scanCode ${e.scanCode} number ${e.number} unicode ${e.unicodeChar} rep ${e.repeatCount} ms ${e.metaState}") }
+                                    ic.sendKeyEvent(e)
                                 }
                                 v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
                             }
@@ -181,21 +195,6 @@ class KeyExtension : InputMethodService() {
                             return true
                         }
                         return false
-                    }
-                })
-                keyButton.setOnClickListener(object : View.OnClickListener {
-                    override fun onClick(v: View?) {
-                        if (v == null) { return }
-                        val ic = currentInputConnection
-                        val time = SystemClock.uptimeMillis()
-                        for (k in keySequences) {
-                            ic.sendKeyEvent(KeyEvent(time, time, KeyEvent.ACTION_DOWN, k.first, 0, k.second))
-                        }
-                        v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
-                        for (k in keySequences.reversed()) {
-                            ic.sendKeyEvent(KeyEvent(time, time, KeyEvent.ACTION_UP, k.first, 0, k.second))
-                        }
-                        v.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
                     }
                 })
                 if (isModifier) {
@@ -272,10 +271,14 @@ class KeyExtension : InputMethodService() {
             }
             return true
         } else if (physicalAltOn) {
-            val p = phyiscalKeyboardAltMapping[event.keyCode] ?: Pair(event.keyCode, 0)
-            ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, p.first, event.repeatCount, modifierState or lockState or (event.metaState and KeyEvent.META_ALT_MASK.inv()) or p.second))
+            val p = phyiscalKeyboardAltMapping[event.keyCode] ?: Triple(event.keyCode, 0, event.keyCode)
+            val e = KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, p.first, event.repeatCount, modifierState or lockState or (event.metaState and KeyEvent.META_ALT_MASK.inv()) or p.second, KeyCharacterMap.VIRTUAL_KEYBOARD, p.third, event.flags)
+            if (logOn) { Log.i(tag, "down ${e.downTime} event ${e.eventTime} keyCode ${e.keyCode} scanCode ${e.scanCode} number ${e.number} unicode ${e.unicodeChar} rep ${e.repeatCount} ms ${e.metaState}") }
+            ic.sendKeyEvent(e)
         } else {
-            ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, event.keyCode, event.repeatCount, modifierState or lockState or event.metaState))
+            val e = KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_DOWN, event.keyCode, event.repeatCount, modifierState or lockState or event.metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, event.scanCode, event.flags)
+            if (logOn) { Log.i(tag, "down ${e.downTime} event ${e.eventTime} keyCode ${e.keyCode} scanCode ${e.scanCode} number ${e.number} unicode ${e.unicodeChar} rep ${e.repeatCount} ms ${e.metaState}") }
+            ic.sendKeyEvent(e)
         }
         if (isModifier && (event.repeatCount == 0)) {
             val m = modifierKeyToMetaState[keyCode]!!
@@ -337,10 +340,14 @@ class KeyExtension : InputMethodService() {
                 statusIcons = ArrayList<Int>(statusIcons.filter { it != R.drawable.palt })
                 updateStatusIcon()
             } else if (physicalAltOn) {
-                val p = phyiscalKeyboardAltMapping[event.keyCode] ?: Pair(event.keyCode, 0)
-                ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, p.first, event.repeatCount, modifierState or lockState or (event.metaState and KeyEvent.META_ALT_MASK.inv()) or p.second))
+                val p = phyiscalKeyboardAltMapping[event.keyCode] ?: Triple(event.keyCode, 0, event.keyCode)
+                val e = KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, p.first, event.repeatCount, modifierState or lockState or (event.metaState and KeyEvent.META_ALT_MASK.inv()) or p.second, KeyCharacterMap.VIRTUAL_KEYBOARD, p.third, event.flags)
+                Log.i(tag, "up ${e.downTime} event ${e.eventTime} keyCode ${e.keyCode} scanCode ${e.scanCode} number ${e.number} unicode ${e.unicodeChar} rep ${e.repeatCount} ms ${e.metaState}")
+                ic.sendKeyEvent(e)
             } else {
-                ic.sendKeyEvent(KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, event.keyCode, event.repeatCount, modifierState or lockState or event.metaState))
+                val e = KeyEvent(event.downTime, event.eventTime, KeyEvent.ACTION_UP, event.keyCode, event.repeatCount, modifierState or lockState or event.metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, event.scanCode, event.flags)
+                Log.i(tag, "up ${e.downTime} event ${e.eventTime} keyCode ${e.keyCode} scanCode ${e.scanCode} number ${e.number} unicode ${e.unicodeChar} rep ${e.repeatCount} ms ${e.metaState}")
+                ic.sendKeyEvent(e)
             }
         }
         if ((isModifier || isPhysicalAlt) && (currentPressedKeys <= 1) && !modifierReleasing) {
